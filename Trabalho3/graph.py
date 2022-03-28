@@ -2,6 +2,7 @@ class Graph:
 
     def __init__(self, n=0):
         self._matrix = []
+        self._weight = []
         for i in range(n):
             self.add_vertice()
 
@@ -26,17 +27,37 @@ class Graph:
         for i in range(len(self._matrix)):
             self._matrix[len(self._matrix)-1].append(0)
 
+        for v in self._weight:
+            v.append(None)
+        self._weight.append([])
+        for i in range(len(self._weight)):
+            self._weight[len(self._weight)-1].append(0)
+
     # Adiciona uma aresta entre os vértices "a" e "b".
-    def add_edge(self, a, b):
+    def add_edge(self, a, b, w=None):
         if a != b:
             self._matrix[a][b] = 1
             self._matrix[b][a] = 1
+            self._weight[a][b] = w
+            self._weight[b][a] = w
 
     # Remove uma aresta entre os vértices "a" e "b".
     def remove_edge(self, a, b):
         if a != b:
             self._matrix[a][b] = 0
             self._matrix[b][a] = 0
+            self._weight[a][b] = None
+            self._weight[b][a] = None
+    
+    # Adiciona um peso em um vértice já existente.
+    def set_weight(self, a, b, w):
+        if a != b and self._matrix[a][b] == 1:
+            self._weight[a][b] = w
+            self._weight[b][a] = w
+    
+    # Retorna o peso de um vértice específico.
+    def get_weight(self, a, b):
+        return self._weight[a][b]
     
     # Retorna a densidade de um vértice específico.
     def vertice_density(self, vertice):

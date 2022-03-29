@@ -18,6 +18,9 @@ class Graph:
 
     def __len__(self):
         return len(self._matrix)
+    
+    def __getitem__(self, n):
+        return self._matrix[n]
 
     # Adiciona um vértice no grafo.
     def add_vertice(self):
@@ -31,7 +34,7 @@ class Graph:
             v.append(None)
         self._weight.append([])
         for i in range(len(self._weight)):
-            self._weight[len(self._weight)-1].append(0)
+            self._weight[len(self._weight)-1].append(None)
 
     # Adiciona uma aresta entre os vértices "a" e "b".
     def add_edge(self, a, b, w=None):
@@ -69,32 +72,28 @@ class Graph:
     # Verifica se existe uma aresta entre os pontos "a" e "b".
     def verify_edge(self, a, b):
         return self._matrix[a][b] == 1
-
-    # Encontra os vértices que podem ser alcançados a partir de um determinado vértice
-    def reachable_vertices(self, v, reachable):
+    
+    # Encontra quantos vértices podem ser alcançados a partir de um determinado vértice
+    def count_reachable_vertices(self, v):
+        return self.crv(v, [0]*len(self))
+    def crv(self, v, reachable):
+        count = 0
         current = self._matrix[v]
         reachable[v] = 1
 
         for i in range(len(current)):
             if current[i] == 1 and reachable[i] != 1:
-                reachable = self.reachable_vertices(i, reachable)
-        
-        return reachable
-    
-    # Encontra quantos vértices podem ser alcançados a partir de um determinado vértice
-    # Obs.: A contagem inclui o próprio vértice 'v'
-    def count_reachable_vertices(self, v):
-        var_reachable_vertices = self.reachable_vertices(v, [0]*len(self))
-        count = sum(var_reachable_vertices)
+                count += self.crv(i, reachable)
 
         return count
     
     # Verifica se uma aresta é uma ponte
     def is_a_bridge(self, a, b):
+        weight = self.get_weight(a, b)
         before = self.count_reachable_vertices(a)
         self.remove_edge(a, b)
         after = self.count_reachable_vertices(a)
-        self.add_edge(a, b)
+        self.add_edge(a, b, weight)
 
         return before > after
 

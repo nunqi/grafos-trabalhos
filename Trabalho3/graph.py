@@ -76,19 +76,24 @@ class Graph:
     # Encontra quantos vértices podem ser alcançados a partir de um determinado vértice
     def count_reachable_vertices(self, v):
         return self.crv(v, [0]*len(self))
-    def crv(self, v, reachable):
-        count = 0
+    def crv(self, v, reachable, count=0):
         current = self._matrix[v]
         reachable[v] = 1
 
         for i in range(len(current)):
             if current[i] == 1 and reachable[i] != 1:
-                count += self.crv(i, reachable)
+                count += 1
+                self.crv(i, reachable, count)
 
         return count
     
     # Verifica se uma aresta é uma ponte
     def is_a_bridge(self, a, b):
+        if self.vertice_density(a) == 1:
+            return False
+        if self.vertice_density(b) == 1:
+            return True
+        
         weight = self.get_weight(a, b)
         before = self.count_reachable_vertices(a)
         self.remove_edge(a, b)

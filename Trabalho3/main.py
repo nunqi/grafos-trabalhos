@@ -55,9 +55,9 @@ def fleury(graph):
 
 def fleury_sum(path):
     count = 0
-    for i in path:
+    for i in range(len(path)):
         try:
-            w = g.get_weight(i, i+1)
+            w = g.get_weight(path[i], path[i+1])
             if w != None:
                 count += w
         except:

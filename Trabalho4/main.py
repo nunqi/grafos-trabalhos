@@ -20,16 +20,17 @@ def bfs(g, root):
             if w not in explored:
                 explored.append(w)
                 q.put(w)
-                aux.add_edge(w, v)
-    q.put(root)
-    explored = [root]
-    while not q.empty():
-        v = q.get()
-        for w in aux.get_adjacents(v):
-            if w not in explored:
-                explored.append(w)
-                q.put(w)
                 tree.add(w, v)
+                # aux.add_edge(w, v)
+    # q.put(root)
+    # explored = [root]
+    # while not q.empty():
+    #    v = q.get()
+    #    for w in aux.get_adjacents(v):
+    #        if w not in explored:
+    #            explored.append(w)
+    #            q.put(w)
+    #            tree.add(w, v)
 
     return tree
 
@@ -44,7 +45,7 @@ def find_path(tree, v):
 
 def visualize(tree):
     edges = tree.get_all_edges()
-    print(str(edges))
+    #print(str(edges))
     g = nx.Graph()
     g.add_edges_from(edges)
     nx.draw_networkx(g)
@@ -60,7 +61,7 @@ def print_connections(g):
         print(str(i+1) + ": " + str(b))
 
 
-def get_file(filename = "content.txt"):
+def get_file(filename="content.txt"):
     vertices = []
 
     with open(filename) as graph_file:

@@ -21,7 +21,6 @@ def dfs(g, root):
         if v not in explored:
             if previous_v != v:
                 if (not g.verify_edge(previous_v, v)) or (previous_v in explored):
-                    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                     for i in range(len(explored)-1, -1, -1):
                         u = explored[i]
                         if g.verify_edge(u, v):
@@ -40,6 +39,22 @@ def dfs(g, root):
     # tree.show()
 
     return tree
+
+
+def recursive_dfs(g, root):
+    explored = []
+    tree = Tree(root)
+    rdfs(root, root, g, explored, tree)
+    return tree
+
+
+def rdfs(u, previous_u, g, explored, tree):
+    if previous_u != u:
+        tree.add(u, previous_u)
+    explored.append(u)
+    for v in g.get_adjacents(u):
+        if v not in explored:
+            rdfs(v, u, g, explored, tree)
 
 
 def visualize(tree):
@@ -86,7 +101,6 @@ for e in file_info[1]:
     g.add_edge(int(e[0])-1, int(e[1])-1)
 
 
-tree = dfs(g, root)
-# print("Distância: " + str(find_distance(tree, i)))
-# print("Caminho: " + str(find_path(tree, i)))
+# tree = dfs(g, root)
+tree = recursive_dfs(g, root)
 visualize(tree)

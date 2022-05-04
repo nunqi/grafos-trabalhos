@@ -37,7 +37,7 @@ class Graph:
             self._weight[len(self._weight)-1].append(None)
 
     # Adiciona uma aresta entre os vértices "a" e "b".
-    def add_edge(self, a, b, w=None):
+    def add_edge(self, a, b, w):
         if a != b:
             self._matrix[a][b] = 1
             self._weight[a][b] = w
@@ -67,33 +67,23 @@ class Graph:
     # Verifica se existe uma aresta entre os pontos "a" e "b".
     def verify_edge(self, a, b):
         return self._matrix[a][b] == 1
-    
-    # Encontra quantos vértices podem ser alcançados a partir de um determinado vértice
-    def count_reachable_vertices(self, v):
-        return self.crv(v, [0]*len(self))
-    def crv(self, v, reachable, count=0):
-        current = self._matrix[v]
-        reachable[v] = 1
 
-        for i in range(len(current)):
-            if current[i] == 1 and reachable[i] != 1:
-                count += 1
-                self.crv(i, reachable, count)
+    def get_adjacents(self, v):
+        result = []
+        vertice = self._matrix[v]
 
-        return count
-    
-    # Verifica se uma aresta é uma ponte
-    def is_a_bridge(self, a, b):
-        if self.vertice_density(a) == 1:
-            return False
-        if self.vertice_density(b) == 1:
-            return True
-        
-        weight = self.get_weight(a, b)
-        before = self.count_reachable_vertices(a)
-        self.remove_edge(a, b)
-        after = self.count_reachable_vertices(a)
-        self.add_edge(a, b, weight)
+        for i in range(len(vertice)):
+            if vertice[i] == 1:
+                result.append(i)
 
-        return before > after
+        return result
 
+    def find_min(self, v):
+        result = -1
+        for j in range(len(self._matrix[v])):
+            if self.verify_edge(v, j):
+                result = j
+        for i in range(len(self._matrix[v])):
+            if self.verify_edge(v, i) and self.get_weight(v, i) <= self.get_weight(v, result):
+                result = i
+        return result

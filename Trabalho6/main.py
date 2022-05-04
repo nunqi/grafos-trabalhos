@@ -1,25 +1,27 @@
 from graph import Graph
-from tree import Tree
 
 import sys
-import networkx as nx
-import matplotlib.pyplot as plt
+import math
 
 
-def dijkstra(g):
-    pass
-
-
-def visualize(tree):
-    edges = tree.get_all_edges()
-    for e in edges:
-        e[0] += 1
-        e[1] += 1
-    # print(str(edges))
-    g = nx.Graph()
-    g.add_edges_from(edges)
-    nx.draw_networkx(g)
-    plt.show()
+def dijkstra(g, u):
+    n = [u]
+    d = []
+    for i in range(len(g)):
+        if i == u:
+            d.append(0)
+        else:
+            if g.verify_edge(u, i):
+                d.append(g.get_weight(u, i))
+            else:
+                d.append(math.inf)
+    while len(n) < len(g):
+        w = g.find_min(u)
+        for v in g.get_adjacents(w):
+            if w not in n:
+                n.append(w)
+                d[v] = min(d[v], d[w] + g.get_weight(w, v))
+    return d
 
 
 def get_file(filename="content.txt"):
@@ -51,9 +53,7 @@ file_info = get_file()
 g = Graph(int(file_info[0]))
 
 for e in file_info[1]:
-    g.add_edge(int(e[0])-1, int(e[1])-1)
+    g.add_edge(int(e[0])-1, int(e[1])-1, int(e[2]))
 
 
-# tree = dfs(g, root)
-tree = recursive_dfs(g, root)
-visualize(tree)
+print(str(dijkstra(g, root)))

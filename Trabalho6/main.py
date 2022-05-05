@@ -8,18 +8,22 @@ def dijkstra(g, u):
     n = [u]
     d = []
     for i in range(len(g)):
-        if i == u:
-            d.append(0)
+        if g.verify_edge(u, i) and i != u:
+            d.append(g.get_weight(u, i))
         else:
-            if g.verify_edge(u, i):
-                d.append(g.get_weight(u, i))
-            else:
-                d.append(math.inf)
+            d.append(math.inf)
+    sorted_d = d.copy()
+    sorted_d.sort()
     while len(n) < len(g):
-        w = g.find_min(u)
+        w = -1
+        min_aux = math.inf
+        for i in range(len(d)):
+            if d[i] <= min_aux and i not in n:
+                w = i
+                min_aux = d[i]
+        n.append(w)
         for v in g.get_adjacents(w):
-            if w not in n:
-                n.append(w)
+            if v not in n:
                 d[v] = min(d[v], d[w] + g.get_weight(w, v))
     return d
 

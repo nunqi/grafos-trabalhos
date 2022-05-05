@@ -79,6 +79,8 @@ class Graph:
         return result
 
     def find_min(self, v):
+        if sum(self[v]):
+            return None
         result = -1
         for j in range(len(self._matrix[v])):
             if self.verify_edge(v, j):

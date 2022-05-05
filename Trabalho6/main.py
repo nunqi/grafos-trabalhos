@@ -9,22 +9,24 @@ def dijkstra(g, u):
     d = []
     for i in range(len(g)):
         if g.verify_edge(u, i) and i != u:
-            d.append(g.get_weight(u, i))
+            d.append([g.get_weight(u, i), u])
         else:
-            d.append(math.inf)
-    sorted_d = d.copy()
-    sorted_d.sort()
+            d.append([math.inf, u])
     while len(n) < len(g):
         w = -1
         min_aux = math.inf
         for i in range(len(d)):
-            if d[i] <= min_aux and i not in n:
+            if d[i][0] <= min_aux and i not in n:
                 w = i
-                min_aux = d[i]
+                min_aux = d[i][0]
         n.append(w)
         for v in g.get_adjacents(w):
-            if v not in n:
-                d[v] = min(d[v], d[w] + g.get_weight(w, v))
+            v_name = v[0].name
+            if v_name not in n:
+                new_dv = d[w][0] + v[1]
+                if new_dv < d[v_name][0]:
+                    d[v_name][0] = new_dv
+                    d[v_name][1] = w
     return d
 
 
@@ -54,7 +56,9 @@ except:
 
 file_info = get_file()
 
-g = Graph(int(file_info[0]))
+g = Graph()
+for i in range(int(file_info[0])):
+    g.add_vertice(i)
 
 for e in file_info[1]:
     g.add_edge(int(e[0])-1, int(e[1])-1, int(e[2]))

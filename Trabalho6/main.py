@@ -11,38 +11,26 @@ def dijkstra(g, u):
     d = []
     for v in g:
         if v.label == u:
-            d.append([v, 0, u, v.label])
+            d.append([v, 0, u])
         else:
-            if g.verify_edge(u, v.label):
-                d.append([v, g.get_weight(u, v.label), u, v.label])
-            else:
-                d.append([v, math.inf, u, v.label])
+            d.append([v, math.inf, u])
     key = lambda a : a[1]
     d.sort(key=key)
     # loop
     while len(n) < len(g):
-        # print(f"{len(n)} / {len(g)} -> {len(n) < len(g)}")
-        # print(d)
         w = d.pop(0)
-        w_label = w[0].label
-        w_weight = w[1]
-        w_prev = w[2]
-        n.append(w_label)
-        result.append((w_label, w_weight, w_prev))
-        # print(f"{w_label}:")
+        n.append(w[0].label)
+        result.append((w[0].label, w[1], w[2]))
         for v, weight in g.get_adjacents(w[0].label):
-            # print(f"> {v.label}")
-            v_label = v.label
-            v_index = -1
-            for i in range(len(d)):
-                if d[i][0].label == v_label:
-                    v_index = i
-            # print(v_index)
-            if v_label not in n:
-                new_dv = w_weight + weight
+            if v.label not in n:
+                v_index = -1
+                for i in range(len(d)):
+                    if d[i][0].label == v.label:
+                        v_index = i
+                new_dv = w[1] + weight
                 if new_dv < d[v_index][1]:
                     d[v_index][1] = new_dv
-                    d[v_index][2] = w_label
+                    d[v_index][2] = w[0].label
                     d.sort(key=key)
     result.sort(key=key)
     return result

@@ -1,7 +1,8 @@
 from graph import Graph
 
-import sys
 import math
+import networkx as nx
+import matplotlib.pyplot as plt
 
 
 def dijkstra(g, u):
@@ -14,13 +15,12 @@ def dijkstra(g, u):
             d.append([v, 0, u])
         else:
             d.append([v, math.inf, u])
-    key = lambda a : a[1]
-    d.sort(key=key)
+    d.sort(key=lambda a: a[1])
     # loop
     while len(n) < len(g):
         w = d.pop(0)
         n.append(w[0].label)
-        result.append((w[0].label, w[1], w[2]))
+        result.append([w[0].label, w[1], w[2]])
         for v, weight in g.get_adjacents(w[0].label):
             if v.label not in n:
                 v_index = -1
@@ -31,9 +31,43 @@ def dijkstra(g, u):
                 if new_dv < d[v_index][1]:
                     d[v_index][1] = new_dv
                     d[v_index][2] = w[0].label
-                    d.sort(key=key)
-    result.sort(key=key)
+                    d.sort(key=lambda a: a[1])
+    result.sort(key=lambda a: a[1])
+    for t in result:
+        if t[1] == math.inf:
+            t[2] = None
     return result
+
+
+def distance(arr, goal):
+    for a in arr:
+        if a[0] == goal:
+            return a[1]
+    return -1
+
+
+def path(arr, origin, goal):
+    result = [goal]
+    next_v = goal
+    while next_v != origin:
+        for a in arr:
+            if a[0] == next_v:
+                result.append(a[2])
+                next_v = a[2]
+        if next_v is None:
+            return []
+    return result
+
+
+def visualize(arr):
+    edges = []
+    for a in arr:
+        if a[0] != a[2] and a[1] != math.inf:
+            edges.append([a[0], a[2]])
+    g = nx.Graph()
+    g.add_edges_from(edges)
+    nx.draw_networkx(g)
+    plt.show()
 
 
 def get_file(filename="content.txt"):
@@ -55,4 +89,10 @@ for e in get_file():
     g.add_edge(e[0], e[1], int(e[2]))
 
 
-print(str(dijkstra(g, 'a')))
+for v in g:
+    print(f" {v.label} -----------")
+    dij = dijkstra(g, v.label)
+    print(f"Dijkstra: {dij}")
+    for a in g:
+        print(f"{a.label}: {distance(dij, a.label)} / {path(dij, v.label, a.label)}")
+    visualize(dij)

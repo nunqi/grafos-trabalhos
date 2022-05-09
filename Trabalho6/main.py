@@ -70,7 +70,7 @@ def visualize(arr):
     plt.show()
 
 
-def get_file(filename="content.txt"):
+def get_file(filename="contentt.txt"):
     vertices = []
 
     with open(filename) as graph_file:
